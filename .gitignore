@@ -62,4 +62,8 @@ fabric.properties
 # Sonarlint plugin
 .idea/sonarlint
 
+.idea/*
+cmake-build-debug/*
+*.iml
+
 # End of https://www.gitignore.io/api/clion
