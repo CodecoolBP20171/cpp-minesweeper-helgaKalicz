@@ -44,21 +44,14 @@ namespace {
 
         void printTable() const {
             // step 3 goes here
-            int fieldWidthSize = 0;
             for (std::vector<Mine> fieldRow : mineField) {
-                fieldWidthSize = fieldRow.size();
-                // Print a line above the rows
-                for (int i = 0; i < fieldWidthSize*4+1; ++i) std::cout << '-';
+                for (int i = 0; i < width*4+1; ++i) std::cout << '-';
                 std::cout << std::endl;
-                for (Mine fieldCell : fieldRow) {
-                    std::cout << "| ";
-                    fieldCell.getIsMine() ? std::cout << '*' : std::cout << fieldCell.getNeighbours();
-                    std::cout << " ";
-                }
+                for (Mine fieldCell : fieldRow) fieldCell.getIsMine() ? std::cout << "| * ": std::cout<< "| " << fieldCell.getNeighbours() << " ";
                 std::cout << "|" << std::endl;
             }
-            // Print a line under the last row
-            for (int i = 0; i < fieldWidthSize*4+1; ++i) std::cout << '-';
+            for (int i = 0; i < width*4+1; ++i) std::cout << '-';
+            std::cout << std::endl;
         }
 
     private:
@@ -67,9 +60,8 @@ namespace {
             // step 1 goes here
             for (int i = 0; i < height; ++i) {
                 std::vector<Mine> character;
-                for (int j = 0; j < width; ++j) {
-                    rand() % 10 > 7 ? character.push_back(Mine(true)) : character.push_back(Mine(false));
-                }
+                for (int j = 0; j < width; ++j) rand() % 10 > 7 ? character.emplace_back(Mine(true)) : character.emplace_back(Mine(false));
+                mineField.push_back(character);
             }
         }
 
@@ -84,7 +76,7 @@ int main() {
     try {
         Minesweeper ms(5, 5);
         ms.printTable();
-        ms.countNeighbours();
+        //ms.countNeighbours();
         ms.printTable();
     } catch (const std::bad_alloc &e) {
         std::cerr << "Couldn't allocate enough memory for minesweeper table" << std::endl;
