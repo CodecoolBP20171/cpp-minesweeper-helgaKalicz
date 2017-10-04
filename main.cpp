@@ -25,8 +25,17 @@ namespace {
         void countNeighbours() {
             // step 2 goes here
             for (int i = 0; i < height*width; ++i) {
-                for (int j = 0; j < 8; ++j) {
-
+                if (table[i] == '.') {
+                    int mines = 0;
+                    if (i-width-1 >= 0 && i%width != 0 && table[i-width-1] == '*') ++mines;
+                    if (i-width >= 0 && table[i-width] == '*') ++mines;
+                    if (i-width+1 >= 0 && (i+1)%width != 0 && table[i-width+1] == '*') ++mines;
+                    if (i-1 >= 0 && i%width != 0 && table[i-1] == '*') ++mines;
+                    if (i+1 < height*width && (i+1)%width != 0 && table[i+1] == '*') ++mines;
+                    if (i+width-1 < height*width && i%width != 0 && table[i+width-1] == '*') ++mines;
+                    if (i+width < height*width && table[i+width] == '*') ++mines;
+                    if (i+width+1 < height*width && (i+1)%width != 0 && table[i+width+1] == '*') ++mines;
+                    table[i] = std::to_string(mines)[0];
                 }
             }
         }
@@ -50,9 +59,7 @@ namespace {
     private:
         void fillTable() {
             // step 1 goes here
-            for (int i = 0; i < height*width; ++i) {
-                rand() % 10 > 7 ? table[i] = '*' : table[i] = '.';
-            }
+            for (int i = 0; i < height*width; ++i) rand() % 100 > 75 ? table[i] = '*' : table[i] = '.';
         }
 
         const size_t width, height;
@@ -61,8 +68,9 @@ namespace {
 }
 
 int main() {
+    srand(time(0));
     try {
-        Minesweeper ms(5, 5);
+        Minesweeper ms(10, 5);
         ms.printTable();
         ms.countNeighbours();
         ms.printTable();
