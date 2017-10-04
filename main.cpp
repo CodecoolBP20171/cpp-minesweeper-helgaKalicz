@@ -47,7 +47,7 @@ namespace {
             for (std::vector<Mine> fieldRow : mineField) {
                 for (int i = 0; i < width*4+1; ++i) std::cout << '-';
                 std::cout << std::endl;
-                for (Mine fieldCell : fieldRow) fieldCell.getIsMine() ? std::cout << "| * ": std::cout<< "| " << fieldCell.getNeighbours() << " ";
+                for (Mine fieldCell : fieldRow) fieldCell.getIsMine() ? std::cout << "| * " : std::cout<< "| " << fieldCell.getNeighbours() << " ";
                 std::cout << "|" << std::endl;
             }
             for (int i = 0; i < width*4+1; ++i) std::cout << '-';
@@ -60,7 +60,7 @@ namespace {
             // step 1 goes here
             for (int i = 0; i < height; ++i) {
                 std::vector<Mine> character;
-                for (int j = 0; j < width; ++j) rand() % 10 > 7 ? character.emplace_back(Mine(true)) : character.emplace_back(Mine(false));
+                for (int j = 0; j < width; ++j) rand() % 100 > 65 ? character.emplace_back(Mine(true)) : character.emplace_back(Mine(false));
                 mineField.push_back(character);
             }
         }
@@ -76,7 +76,7 @@ int main() {
     try {
         Minesweeper ms(5, 5);
         ms.printTable();
-        //ms.countNeighbours();
+        ms.countNeighbours();
         ms.printTable();
     } catch (const std::bad_alloc &e) {
         std::cerr << "Couldn't allocate enough memory for minesweeper table" << std::endl;
