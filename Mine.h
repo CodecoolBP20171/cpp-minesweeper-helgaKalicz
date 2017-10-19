@@ -13,10 +13,10 @@ public:
     bool getIsMine();
 
     bool getIsEmpty();
-    void setIsEmpty(bool isEmpty);
+    void setIsEmpty();
 
     bool getIsTurnedUp();
-    void setIsTurnedUp(bool isTurnedUp);
+    void setIsTurnedUp();
 
     int getNeighbours();
     void addNeighbours();

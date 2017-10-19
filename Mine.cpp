@@ -1,9 +1,5 @@
-//
-
 #include "Mine.h"
 
-//
-// Created by kalicz on 2017.10.03..
 Mine::Mine(bool isMine) {
     this->isMine = isMine;
     isTurnedUp = false;
@@ -11,30 +7,16 @@ Mine::Mine(bool isMine) {
     neighbours = 0;
 }
 
-bool Mine::getIsMine() {
-    return isMine;
-}
+bool Mine::getIsMine() { return isMine; }
 
-bool Mine::getIsEmpty() {
-    return isEmpty;
-}
+bool Mine::getIsEmpty() { return this->isEmpty; }
 
-void Mine::setIsEmpty(bool isEmpty) {
-    this->isEmpty = isEmpty;
-}
+void Mine::setIsEmpty() { this->isEmpty = false; }
 
-bool Mine::getIsTurnedUp() {
-    return isTurnedUp;
-}
+bool Mine::getIsTurnedUp() { return this->isTurnedUp; }
 
-void Mine::setIsTurnedUp(bool isTurnedUp) {
-    this->isTurnedUp = isTurnedUp;
-}
+void Mine::setIsTurnedUp() { this->isTurnedUp = true; }
 
-int Mine::getNeighbours() {
-    return neighbours;
-}
+int Mine::getNeighbours() { return this->neighbours; }
 
-void Mine::addNeighbours() {
-    ++neighbours;
-}
+void Mine::addNeighbours() { ++neighbours; }
