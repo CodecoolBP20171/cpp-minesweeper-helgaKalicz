@@ -8,24 +8,17 @@
 
 class Mine {
 public:
-    Mine(bool isMine);
-
-    bool getIsMine();
-
-    bool getIsEmpty();
-    void setIsEmpty();
+    Mine(int value = 0);
 
     bool getIsTurnedUp();
-    void setIsTurnedUp();
+    void turnUp();
 
     int getNeighbours();
     void addNeighbours();
 
 private:
-    bool isMine;
-    bool isEmpty;
     bool isTurnedUp;
-    int neighbours;
+    int value;
 
 };
 

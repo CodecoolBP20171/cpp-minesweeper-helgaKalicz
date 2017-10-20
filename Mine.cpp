@@ -1,22 +1,14 @@
 #include "Mine.h"
 
-Mine::Mine(bool isMine) {
-    this->isMine = isMine;
-    isTurnedUp = false;
-    isEmpty = true;
-    neighbours = 0;
+Mine::Mine(int value) {
+    this->isTurnedUp = false;
+    this->value = value;
 }
-
-bool Mine::getIsMine() { return isMine; }
-
-bool Mine::getIsEmpty() { return this->isEmpty; }
-
-void Mine::setIsEmpty() { this->isEmpty = false; }
 
 bool Mine::getIsTurnedUp() { return this->isTurnedUp; }
 
-void Mine::setIsTurnedUp() { this->isTurnedUp = true; }
+void Mine::turnUp() { this->isTurnedUp = true; }
 
-int Mine::getNeighbours() { return this->neighbours; }
+int Mine::getNeighbours() { return this->value; }
 
-void Mine::addNeighbours() { ++neighbours; }
+void Mine::addNeighbours() { this->value++; }

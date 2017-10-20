@@ -1,6 +1,6 @@
+#include "Mine.h"
 #include <iostream>
 #include <algorithm>
-#include "Mine.h"
 
 namespace {
     class Minesweeper {
@@ -23,16 +23,19 @@ namespace {
             delete[] table;
         }
 
+
         void countNeighbours() {
             // step 2 goes here
             for (int i = 0; i < height; ++i) {
                 for (int j = 0; j < width; ++j) {
-                    if (mineField[i][j].getIsMine()) {
+                    if (mineField[i][j].getNeighbours() == -1) {
                         for (int k = -1; k <= 1; ++k) {
                             for (int l = -1; l <= 1; ++l) {
                                 if (!(k == 0 && l == 0)) {
                                     if (!(i+k < 0 || i+k >= height || j+l < 0 || j+l >= width)) {
-                                        mineField[i+k][j+l].addNeighbours();
+                                        if (mineField[i + k][j + l].getNeighbours() != -1) {
+                                            mineField[i + k][j + l].addNeighbours();
+                                        }
                                     }
                                 }
                             }
@@ -42,52 +45,19 @@ namespace {
             }
         }
 
-        void setEmptiness() {
-            for (int i = 0; i < height; ++i) {
-                for (int j = 0; j < width; ++j) {
-                    if (mineField[i][j].getNeighbours() > 0) mineField[i][j].setIsEmpty();
-                }
-            }
-        }
-
-        void printTable() const {
-            // step 3 goes here
-            for (std::vector<Mine> fieldRow : mineField) {
-                for (int i = 0; i < width*4+1; ++i) std::cout << '-';
-                std::cout << std::endl;
-                for (Mine fieldCell : fieldRow) fieldCell.getIsTurnedUp() ? std::cout << "| " << fieldCell.getNeighbours() << " " : std::cout<< "|   ";
-                std::cout << "|" << std::endl;
-            }
-            for (int i = 0; i < width*4+1; ++i) std::cout << '-';
-            std::cout << std::endl;
-
-        }
-
-        void printTable2() const {
-            // Print out the table just for help.
-            for (std::vector<Mine> fieldRow : mineField) {
-                for (int i = 0; i < width*4+1; ++i) std::cout << '-';
-                std::cout << std::endl;
-                for (Mine fieldCell : fieldRow) fieldCell.getIsMine() ? std::cout << "| * " : std::cout<< "| " << fieldCell.getNeighbours() << " ";
-                std::cout << "|" << std::endl;
-            }
-            for (int i = 0; i < width*4+1; ++i) std::cout << '-';
-            std::cout << std::endl;
-        }
 
         void turnUpField(int x, int y) {
-            mineField[x][y].setIsTurnedUp();
-            if (mineField[x][y].getIsEmpty()) {
+            mineField[x][y].turnUp();
+            if (mineField[x][y].getNeighbours() == 0) {
                 int counter = 0;
                 for (int i = x-1; i <= x+1; ++i) {
                     for (int j = y-1; j <= y+1; ++j) {
                         ++counter;
                         if (counter % 2 == 0 && i >= 0 && j >=0 && i < height && j < width) {
-                            if (!mineField[i][j].getIsMine() && !mineField[i][j].getIsEmpty()) {
-                                mineField[i][j].setIsTurnedUp();
+                            if (mineField[i][j].getNeighbours() > 0) {
+                                mineField[i][j].turnUp();
                             }
-                            else if (mineField[i][j].getIsEmpty() && !mineField[i][j].getIsTurnedUp()) {
-                                mineField[i][j].setIsTurnedUp();
+                            else if (mineField[i][j].getNeighbours() == 0 && !mineField[i][j].getIsTurnedUp()) {
                                 turnUpField(i, j);
                             }
                         }
@@ -96,15 +66,75 @@ namespace {
             }
         }
 
-        bool gameEnd() {
+
+        void printTable() const {
+            // step 3 goes here
             for (std::vector<Mine> fieldRow : mineField) {
+                for (int i = 0; i < width*4+1; ++i) std::cout << '-';
+                std::cout << std::endl;
                 for (Mine fieldCell : fieldRow) {
-                    if (fieldCell.getIsMine() && fieldCell.getIsTurnedUp()) { return false; }
-                    else if (!fieldCell.getIsMine() && !fieldCell.getIsTurnedUp()) { return false; }
+                    if (fieldCell.getIsTurnedUp()) {
+                        if (fieldCell.getNeighbours() == -1) { std::cout<< "| * "; }
+                        else { std::cout << "| " << fieldCell.getNeighbours() << " "; }
+                    }
+                    else { std::cout<< "|   "; }
+                }
+                std::cout << "|" << std::endl;
+            }
+            for (int i = 0; i < width*4+1; ++i) std::cout << '-';
+            std::cout << std::endl;
+
+        }
+
+
+        void printTable2() const {
+            // Print out the table just for help.
+            for (std::vector<Mine> fieldRow : mineField) {
+                for (int i = 0; i < width*4+1; ++i) std::cout << '-';
+                std::cout << std::endl;
+                for (Mine fieldCell : fieldRow) fieldCell.getNeighbours() == -1 ? std::cout << "| * " : std::cout<< "| " << fieldCell.getNeighbours() << " ";
+                std::cout << "|" << std::endl;
+            }
+            for (int i = 0; i < width*4+1; ++i) std::cout << '-';
+            std::cout << std::endl;
+        }
+
+
+        bool isStepOnMine() {
+            for (int i = 0; i < height; ++i) {
+                for (int j = 0; j < width; ++j) {
+                    if ((mineField[i][j].getNeighbours() == -1) && mineField[i][j].getIsTurnedUp()) {
+                        return true; }
                 }
             }
-            return true;
+            return false;
         }
+
+
+        bool isUnknownField() {
+            for (int i = 0; i < height; ++i) {
+                for (int j = 0; j < width; ++j) {
+                    if (mineField[i][j].getNeighbours() != -1 && !mineField[i][j].getIsTurnedUp()) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+
+        bool gameEnd() {
+            if (isStepOnMine())         { std::cout << "You lose!\nGame Over!"; return true; }
+            else if (!isUnknownField()) { std::cout << "You win!";              return true; }
+            return false;
+        }
+
+
+        int getHeight() { return this->height; }
+
+
+        int getWidth()  { return this->width;}
+
 
     private:
 
@@ -112,7 +142,7 @@ namespace {
             // step 1 goes here
             for (int i = 0; i < height; ++i) {
                 std::vector<Mine> character;
-                for (int j = 0; j < width; ++j) rand() % 100 > 90 ? character.emplace_back(Mine(true)) : character.emplace_back(Mine(false));
+                for (int j = 0; j < width; ++j) rand() % 100 > 90 ? character.emplace_back(Mine(-1)) : character.emplace_back(Mine(0));
                 mineField.push_back(character);
             }
         }
@@ -127,20 +157,31 @@ namespace {
 int main() {
     srand(time(0));
     try {
-        Minesweeper ms(10, 10);
+        Minesweeper ms(5, 5);
         ms.countNeighbours();
-        ms.setEmptiness();
         ms.printTable2();
         ms.printTable();
         while (!ms.gameEnd()) {
             int x;
             int y;
-            std::cin >> x;
-            std::cin >> y;
-            ms.turnUpField(x, y);
+            while (true) {
+                std::cout << "\nGive me the row: ";
+                std::cin >> x;
+                std::cin.clear();
+                std::cin.ignore(255, '\n');
+                if (x > 0 && x <= ms.getHeight()) { break; }
+            }
+            while (true) {
+                std::cout << "\nGive me the cell: ";
+                std::cin >> y;
+                std::cin.clear();
+                std::cin.ignore(255, '\n');
+                if (y > 0 && y <= ms.getWidth()) break;
+            }
+            ms.turnUpField(x-1, y-1);
+            ms.printTable2();
             ms.printTable();
         }
-        std::cout << "Game end!";
     } catch (const std::bad_alloc &e) {
         std::cerr << "Couldn't allocate enough memory for minesweeper table" << std::endl;
         return EXIT_FAILURE;
