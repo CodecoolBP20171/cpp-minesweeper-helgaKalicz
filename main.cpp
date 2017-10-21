@@ -49,11 +49,9 @@ namespace {
         void turnUpField(int x, int y) {
             mineField[x][y].turnUp();
             if (mineField[x][y].getNeighbours() == 0) {
-                int counter = 0;
                 for (int i = x-1; i <= x+1; ++i) {
                     for (int j = y-1; j <= y+1; ++j) {
-                        ++counter;
-                        if (counter % 2 == 0 && i >= 0 && j >=0 && i < height && j < width) {
+                        if (i >= 0 && j >=0 && i < height && j < width) {
                             if (mineField[i][j].getNeighbours() > 0) {
                                 mineField[i][j].turnUp();
                             }
@@ -142,7 +140,7 @@ namespace {
             // step 1 goes here
             for (int i = 0; i < height; ++i) {
                 std::vector<Mine> character;
-                for (int j = 0; j < width; ++j) rand() % 100 > 90 ? character.emplace_back(Mine(-1)) : character.emplace_back(Mine(0));
+                for (int j = 0; j < width; ++j) rand() % 100 > 85 ? character.emplace_back(Mine(-1)) : character.emplace_back(Mine(0));
                 mineField.push_back(character);
             }
         }
@@ -157,9 +155,9 @@ namespace {
 int main() {
     srand(time(0));
     try {
-        Minesweeper ms(5, 5);
+        Minesweeper ms(20, 20);
         ms.countNeighbours();
-        ms.printTable2();
+//        ms.printTable2();
         ms.printTable();
         while (!ms.gameEnd()) {
             int x;
@@ -179,7 +177,7 @@ int main() {
                 if (y > 0 && y <= ms.getWidth()) break;
             }
             ms.turnUpField(x-1, y-1);
-            ms.printTable2();
+//            ms.printTable2();
             ms.printTable();
         }
     } catch (const std::bad_alloc &e) {
